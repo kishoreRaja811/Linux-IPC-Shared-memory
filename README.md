@@ -1,11 +1,8 @@
-# Linux-Process-API-fork-wait-exec-
-Ex02-Linux Process API-fork(), wait(), exec()
-# Ex02-OS-Linux-Process API - fork(), wait(), exec()
-Operating systems Lab exercise
-
+# Linux-IPC-Shared-memory
+Ex06-Linux IPC-Shared-memory
 
 # AIM:
-To write C Program that uses Linux Process API - fork(), wait(), exec()
+To Write a C program that illustrates two processes communicating using shared memory.
 
 # DESIGN STEPS:
 
@@ -15,157 +12,49 @@ Navigate to any Linux environment installed on the system or installed inside a 
 
 ### Step 2:
 
-Write the C Program using Linux Process API - fork(), wait(), exec() 
+Write the C Program using Linux Process API - Shared Memory
 
 ### Step 3:
 
-Test the C Program for the desired output. 
+Execute the C Program for the desired output. 
 
 # PROGRAM:
 
-## C Program to print process ID and parent Process ID using Linux API system calls
-~~~
+## Write a C program that illustrates two processes communicating using shared memory.
+
+```
 #include <stdio.h>
-#include <sys/types.h>
-#include <unistd.h>
-int main(void)
-{	//variable to store calling function's process id
-	pid_t process_id;
-	//variable to store parent function's process id
-	pid_t p_process_id;
-	//getpid() - will return process id of calling function
-	process_id = getpid();
-	//getppid() - will return process id of parent function
-	p_process_id = getppid();
-	//printing the process ids
+#include <sys/ipc.h>
+#include <sys/shm.h>
 
-//printing the process ids
-	printf("The process id: %d\n",process_id);
-	printf("The process id of parent function: %d\n",p_process_id);
-	return 0; }
-~~~
-
-## OUTPUT
-![323363651-277a5ef9-b0c2-4e5b-ad59-4a415db2c31c](https://github.com/user-attachments/assets/6dffb9f6-4fb8-4202-ac89-89b35803df0f)
-
-
-## C Program to create new process using Linux API system calls fork() and exit()
-~~~
-#include <stdio.h>
-#include<stdlib.h>
-int main()
-{ int pid; 
-pid=fork(); 
-if(pid == 0) 
-{ printf("Iam child my pid is %d\n",getpid()); 
-printf("My parent pid is:%d\n",getppid()); 
-exit(0); } 
-else{ 
-printf("I am parent, my pid is %d\n",getpid()); 
-sleep(100); 
-exit(0);} 
-}
-~~~
-
-<br>
-<br>
-<br>
-<br>
-<br>
-
-
-## OUTPUT
-![323363997-88cf0f5e-c8fc-4341-b71a-c87c6979fdf1](https://github.com/user-attachments/assets/4fa7b882-4a81-4933-9f31-0d57535d10eb)
-
-
-## C Program to execute Linux system commands using Linux API system calls exec() family
-~~~
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
 int main()
 {
-	printf("Running ps with execlp\n");
-	execlp("ps", "ps", "ax", NULL);
-	printf("Done.\n");
-	exit(0);
+	// Generate a unique key using ftok
+	key_t key = ftok("shmfile", 65);
+
+	// Get an identifier for the shared memory segment using shmget
+	int shmid = shmget(key, 1024, 0666 | IPC_CREAT);
+      printf("Shared memory id = %d \n",shmid);
+// Attach to the shared memory segment using shmat
+	char* str = (char*)shmat(shmid, (void*)0, 0);
+	
+    printf("Write Data : ");
+	fgets(str, 1024, stdin);
+
+	printf("Data written in memory: %s\n", str);
+
+	// Detach from the shared memory segment using shmdt
+	shmdt(str);
+
+	return 0;
 }
-~~~
+```
+
+
 
 ## OUTPUT
-![323364224-1842c773-69d6-4a4d-9e90-fd5f92813952](https://github.com/user-attachments/assets/66153550-2e6b-42cd-b96b-b7579d2c43c2)
 
+<img width="930" height="614" alt="image" src="https://github.com/user-attachments/assets/b4de0391-9999-480a-9312-f3b4bfbbf8b6" />
 
 # RESULT:
-The programs are executed successfully.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##OUTPUT
-
-
-
-
-
-
-
-
-## C Program to execute Linux system commands using Linux API system calls exec() , exit() , wait() family
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##OUTPUT
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# RESULT:
-The programs are executed successfully.
+The program is executed successfully.
